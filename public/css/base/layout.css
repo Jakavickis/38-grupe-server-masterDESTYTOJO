@@ -15,7 +15,8 @@ body {
 }
 
 .borderContainer {
-    border: 1px solid black;
+    border: 1px solid greenyellow;
+    border-radius: 6px;
 }
 
 @media (min-width: 700px) {

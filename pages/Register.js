@@ -27,7 +27,7 @@ class PageRegister extends PageTemplate {
                         <input type="checkbox" id="tos" required>
 
                         <div></div>
-                        <button type="submit">Register</button>
+                        <button class="registerButton" type="submit"><span>Register</span></button>
                     </form>
                 </div>`;
     }
