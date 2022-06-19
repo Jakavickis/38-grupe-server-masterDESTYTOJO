@@ -2,6 +2,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: greenyellow;
+}
+
+.main-loggedIn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: green;
 }
 
 .main-header > nav {
