@@ -9,27 +9,32 @@ if (submitDOM) {
     submitDOM.addEventListener('click', (e) => {
         e.preventDefault();
 
-        const data = {};
-
         notificationsDOM.classList.remove('show');
-        notificationsDOM.innerText = '';
+
+        const data = {};
+        const errors = [];
 
         for (const inputDOM of inputsDOM) {
             if (inputDOM.type !== 'checkbox') {
                 //prie name priskiriame inputo value ka irasome
                 data[inputDOM.name] = inputDOM.value;
                 const rule = inputDOM.dataset.validation;
-                const result = IsValid[rule](inputDOM.value);
-                if (result === true) {
-                    data[inputDOM.name] = inputDOM.value;
+                // destrukturizavimas [err,msg] = [true, 'Per trumpas email tekstas.']
+                const [err, msg] = IsValid[rule](inputDOM.value);
+                if (err) {
+                    errors.push(msg)
                 } else {
-                    console.log('klaida')
-                    notificationsDOM.classList.add('show');
-                    notificationsDOM.innerHTML += `<p>${result}</p>`;
+                    data[inputDOM.name] = inputDOM.value;
                 }
             } else {
                 data[inputDOM.name] = inputDOM.checked;
             }
+        }
+
+        if (errors.length) {
+            notificationsDOM.classList.add('show');
+            // .\n nauja eilute(enter) reiskia simbolis ir join newline
+            notificationsDOM.innerText = errors.join('.\n') + '.';
         }
 
         // tikriname ar laukai ne tusti
@@ -48,3 +53,25 @@ if (submitDOM) {
         // jei ne parasom all good bloke
     })
 }
+
+//## varijantas ##//
+// notificationsDOM.classList.remove('show');
+// notificationsDOM.innerText = '';
+
+// for (const inputDOM of inputsDOM) {
+//     if (inputDOM.type !== 'checkbox') {
+//         //prie name priskiriame inputo value ka irasome
+//         data[inputDOM.name] = inputDOM.value;
+//         const rule = inputDOM.dataset.validation;
+//         const result = IsValid[rule](inputDOM.value);
+//         if (result === true) {
+//             data[inputDOM.name] = inputDOM.value;
+//         } else {
+//             console.log('klaida')
+//             notificationsDOM.classList.add('show');
+//             notificationsDOM.innerHTML += `<p>${result}</p>`;
+//         }
+//     } else {
+//         data[inputDOM.name] = inputDOM.checked;
+//     }
+// }

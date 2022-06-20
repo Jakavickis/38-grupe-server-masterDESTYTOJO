@@ -1,29 +1,32 @@
 //sutampa su Register.js const validationRule = inputDOM.dataset.validation;
+
+// error-first approach
+
 class IsValid {
-    static fullname(str) {
+    static fullname(str) {  //str stringas tiesiog name
         if (str.length < 2) {
-            return 'Per trumpas fullname tekstas.';
+            return [true, 'Per trumpas fullname tekstas.'];
         }
 
         const parts = str.split(' ');
         if (parts.length < 2) {
-            return 'Per mazai fullname zodziu';
+            return [true, 'Per mazai fullname zodziu'];
         }
-        return true; // [true, 'fullname'];
+        return [false, 'OK']; // [true, 'fullname'];
     }
     //statiniai metodai nereikalauja const a = new fullname()   
     static email(str) {
         if (str.length < 2) {
-            return 'Per trumpas email tekstas.'
+            return [true, 'Per trumpas email tekstas.']
         }
-        return true;
+        return [false, 'OK'];
     }
 
     static password(str) {
         if (str.length < 2) {
-            return 'Per trumpas password.'
+            return [true, 'Per trumpas password.']
         }
-        return true;
+        return [false, 'OK'];
     }
 }
 
