@@ -3,6 +3,7 @@ import { IsValid } from "../components/IsValid.js";
 const formDOM = document.querySelector('.form');
 const inputsDOM = formDOM.querySelectorAll('input');
 const submitDOM = formDOM.querySelector('button');
+const notificationsDOM = formDOM.querySelector('.notifications');
 
 if (submitDOM) {
     submitDOM.addEventListener('click', (e) => {
@@ -10,16 +11,21 @@ if (submitDOM) {
 
         const data = {};
 
+        notificationsDOM.classList.remove('show');
+        notificationsDOM.innerText = '';
+
         for (const inputDOM of inputsDOM) {
             if (inputDOM.type !== 'checkbox') {
                 //prie name priskiriame inputo value ka irasome
                 data[inputDOM.name] = inputDOM.value;
                 const rule = inputDOM.dataset.validation;
                 const result = IsValid[rule](inputDOM.value);
-                if (result) {
+                if (result === true) {
                     data[inputDOM.name] = inputDOM.value;
                 } else {
                     console.log('klaida')
+                    notificationsDOM.classList.add('show');
+                    notificationsDOM.innerHTML += `<p>${result}</p>`;
                 }
             } else {
                 data[inputDOM.name] = inputDOM.checked;
