@@ -35,6 +35,7 @@ if (submitDOM) {
             notificationsDOM.classList.add('show');
             // .\n nauja eilute(enter) reiskia simbolis ir join newline
             notificationsDOM.innerText = errors.join('.\n') + '.';
+            // arba notificationsDOM.innerHTML = errors.map(e => `<p>${e}.</p>`).join('');
         }
 
         // tikriname ar laukai ne tusti
