@@ -1,5 +1,4 @@
 //sutampa su Register.js const validationRule = inputDOM.dataset.validation;
-
 // error-first approach
 
 class IsValid {
@@ -12,6 +11,8 @@ class IsValid {
             // true taip buvo klaida ir kokia klaida parasoma 
             return [true, 'Netinkamas tipas, turi buti "string"']
         }
+
+        //pirma validacija formatavimas iiiiir tada funkcijos aprasancios visus scenarijus
         str = str.trim().replace(/\s+/g, ' ');
         // str = str.trim().replaceAll('  ', ' '); // nes pas mane sitas neveikia :(
 
@@ -49,6 +50,79 @@ class IsValid {
                     return [true, `Neleistinas simbolis "${s}"`];
                 }
             }
+        }
+
+        return [false, 'OK'];
+    }
+
+    static email(str) {
+        if (str === undefined) {
+            return [true, 'Neduotas parametras'];
+        }
+
+        if (typeof str !== 'string') {
+            return [true, 'Netinkamas tipas, turi buti "string"']
+        }
+
+        str = str.trim();
+
+        const minWordLength = 6;
+        if (str.length < minWordLength) {
+            return [true, `Per trumpas , turi buti minimum ${minWordLength} simboliai`];
+        }
+
+        const allowedEmailSymbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.@';
+
+        let simbolCount = 0;
+
+        //neliesti
+        for (const simbol of str) {
+            if (simbol === '@') {
+                simbolCount++
+            }
+        }
+
+        if (simbolCount === 0 || simbolCount > 1) {
+            return [true, 'email turi tureti tik viena @ simboli']
+        }
+
+        if (str[0] === '@') {
+            return [true, 'truksta teksto pries @ simbolio']
+        }
+
+        // if (str[str.length - 1] === '@') {
+        //     return [true, 'truksta teksto po @ simbolio']
+        // }
+        if (str.at(-1) === '@') {
+            return [true, 'truksta teksto po @ simbolio']
+        }
+
+        for (const simbol of str) {
+            if (!allowedEmailSymbols.includes(simbol)) {
+                return [true, `neleistinas simbolis - ${simbol}`]
+            }
+        }
+
+        const splitedEmailStr = str.split('@')[1]
+
+        let dotCount = 0;
+
+        for (const simbolDot of splitedEmailStr) {
+            if (simbolDot === '.') {
+                dotCount++
+            }
+        }
+
+        if (dotCount === 0) {
+            return [true, 'netinkamas domenas']
+        }
+
+        if (str.at(-2) === '.' || str.at(-1) === '.') {
+            return [true, 'el. pastas turi baigtis bent dvejomis raidemis']
+        }
+
+        if (str.includes('..')) {
+            return [true, 'du taskai is eiles']
         }
 
         return [false, 'OK'];

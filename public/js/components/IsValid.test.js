@@ -181,3 +181,158 @@ describe('Gauname tinkamas reiksmes', () => {
         expect(msg).toBe('OK');
     })
 })
+
+///////// email testai \\\\\\\\\\\
+
+describe('Gaudome email netinkamus tipus', () => {
+    test('no params', () => {
+        const [err, msg] = IsValid.email();
+        expect(err).toBe(true);
+        expect(msg).toBe('Neduotas parametras');
+    })
+
+    test('number', () => {
+        const [err, msg] = IsValid.email(1);
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+    test('boolean', () => {
+        const [err, msg] = IsValid.email(true);
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+    test('array', () => {
+        const [err, msg] = IsValid.email([]);
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+    test('null', () => {
+        const [err, msg] = IsValid.email(null);
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+    test('object', () => {
+        const [err, msg] = IsValid.email({});
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+    test('function', () => {
+        const [err, msg] = IsValid.email(() => { });
+        expect(err).toBe(true);
+        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    })
+
+
+})
+
+describe('Gauname netinkamas email reiksmes', () => {
+    test('empty string', () => {
+        const [err, msg] = IsValid.email('');
+        expect(err).toBe(true);
+        expect(msg).toBe('Per trumpas , turi buti minimum 6 simboliai');
+    })
+
+    test('one simbol to short', () => {
+        const [err, msg] = IsValid.email('a@a.a');
+        expect(err).toBe(true);
+        expect(msg).toBe('Per trumpas , turi buti minimum 6 simboliai');
+    })
+
+    test('not enought @ simbol', () => {
+        const [err, msg] = IsValid.email('aaaaaa.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('email turi tureti tik viena @ simboli');
+    })
+
+    test('too much @ simbol', () => {
+        const [err, msg] = IsValid.email('aaaa@@aa.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('email turi tureti tik viena @ simboli');
+    })
+
+    test('@ infront', () => {
+        const [err, msg] = IsValid.email('@aaaaaaa.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('truksta teksto pries @ simbolio');
+    })
+
+    test('@ in the back', () => {
+        const [err, msg] = IsValid.email('aaaaaaa.lt@');
+        expect(err).toBe(true);
+        expect(msg).toBe('truksta teksto po @ simbolio');
+    })
+
+    test('@ in the back', () => {
+        const [err, msg] = IsValid.email('aaaaaaa@');
+        expect(err).toBe(true);
+        expect(msg).toBe('truksta teksto po @ simbolio');
+    })
+
+    test('invalid simbols', () => {
+        const [err, msg] = IsValid.email('aaa#a<a@aa.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('neleistinas simbolis - #');
+    })
+
+    test('invalid simbols', () => {
+        const [err, msg] = IsValid.email('aaaaaa@a>.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('neleistinas simbolis - >');
+    })
+
+    test('forgot .', () => {
+        const [err, msg] = IsValid.email('aaaa@aaa');
+        expect(err).toBe(true);
+        expect(msg).toBe('netinkamas domenas');
+    })
+
+    test('forgot . after @ simbol', () => {
+        const [err, msg] = IsValid.email('aa.aa@aaaaaaaa');
+        expect(err).toBe(true);
+        expect(msg).toBe('netinkamas domenas');
+    })
+
+    test('last simbol cannot be .', () => {
+        const [err, msg] = IsValid.email('aaaa@aaaaaaaa.');
+        expect(err).toBe(true);
+        expect(msg).toBe('el. pastas turi baigtis bent dvejomis raidemis');
+    })
+
+    test('second from end simbol cannot be .', () => {
+        const [err, msg] = IsValid.email('aaaa@aaaaaaa.a');
+        expect(err).toBe(true);
+        expect(msg).toBe('el. pastas turi baigtis bent dvejomis raidemis');
+    })
+
+    test('cannot be two dots inline', () => {
+        const [err, msg] = IsValid.email('aaaa@aaaaaaa..aa');
+        expect(err).toBe(true);
+        expect(msg).toBe('du taskai is eiles');
+    })
+
+    test('cannot be two dots inline', () => {
+        const [err, msg] = IsValid.email('aa..aa@aaaaaaaa.lt');
+        expect(err).toBe(true);
+        expect(msg).toBe('du taskai is eiles');
+    })
+})
+
+describe('Gauname tinkamas reiksmes', () => {
+    test('email', () => {
+        const [err, msg] = IsValid.email('petras@petras.lt');
+        expect(err).toBe(false);
+        expect(msg).toBe('OK');
+    })
+
+    test('email length', () => {
+        const [err, msg] = IsValid.email('a@a.lt');
+        expect(err).toBe(false);
+        expect(msg).toBe('OK');
+    })
+
+})
