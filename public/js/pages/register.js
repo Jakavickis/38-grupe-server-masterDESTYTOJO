@@ -28,14 +28,39 @@ if (submitDOM) {
                 }
             } else {
                 data[inputDOM.name] = inputDOM.checked;
+                if (!inputDOM.checked) {
+                    errors.push('Privaloma sutikti su TOS')
+                }
             }
         }
+
+        if (inputsDOM[2].value !== inputsDOM[3].value) {
+            errors.push('Slaptazodziai nesutampa')
+        }
+
+
 
         if (errors.length) {
             notificationsDOM.classList.add('show');
             // .\n nauja eilute(enter) reiskia simbolis ir join newline
             notificationsDOM.innerText = errors.join('.\n') + '.';
             // arba notificationsDOM.innerHTML = errors.map(e => `<p>${e}.</p>`).join('');
+        } else {
+            delete data.repass;
+            delete data.tos;
+
+            async function postData() {
+                const response = await fetch(formDOM.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                });
+                return response.json();
+            }
+
+            postData();
         }
 
         // tikriname ar laukai ne tusti

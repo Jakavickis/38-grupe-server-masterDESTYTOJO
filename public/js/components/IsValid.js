@@ -194,3 +194,13 @@ class IsValid {
 }
 
 export { IsValid }
+
+// pavizdukas
+// 1petras@mail.com - blogas
+// !isNaN(+locale[0])
+// !isNaN(+'1petras'[0])
+// !isNaN(+'1')
+// !isNaN(1)
+// !false
+// true
+
