@@ -183,156 +183,210 @@ describe('Gauname tinkamas reiksmes', () => {
 })
 
 ///////// email testai \\\\\\\\\\\
+describe('Email', () => {
+    describe('Gaudome netinkamus tipus', () => {
+        test('no params', () => {
+            const [err, msg] = IsValid.email();
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
 
-describe('Gaudome email netinkamus tipus', () => {
-    test('no params', () => {
-        const [err, msg] = IsValid.email();
-        expect(err).toBe(true);
-        expect(msg).toBe('Neduotas parametras');
+        test('number', () => {
+            const [err, msg] = IsValid.email(1);
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
+
+        test('boolean', () => {
+            const [err, msg] = IsValid.email(true);
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
+
+        test('array', () => {
+            const [err, msg] = IsValid.email([]);
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
+
+        test('null', () => {
+            const [err, msg] = IsValid.email(null);
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
+
+        test('object', () => {
+            const [err, msg] = IsValid.email({});
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
+
+        test('function', () => {
+            const [err, msg] = IsValid.email(() => { });
+            expect(err).toBe(true);
+            expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+        })
     })
 
-    test('number', () => {
-        const [err, msg] = IsValid.email(1);
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    describe('Gauname netinkamas reiksmes', () => {
+        test('empty string value', () => {
+            const [error, msg] = IsValid.email('');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('string without @ symbol', () => {
+            const [error, msg] = IsValid.email('qwertyuiop');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('string with too many @ symbols', () => {
+            const [error, msg] = IsValid.email('qwe@rty@uiop');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('string with too many @ symbols (2)', () => {
+            const [error, msg] = IsValid.email('qwe@@uiop');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('email withour locale part', () => {
+            const [error, msg] = IsValid.email('@uiop');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('email withour domain part', () => {
+            const [error, msg] = IsValid.email('uiop@');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('locale can contain only: letters, numbers and dot', () => {
+            const [error, msg] = IsValid.email('asd.123_@asd.lt');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('locale can begin with letters only', () => {
+            const [error, msg] = IsValid.email('.asd123@asd.lt');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('locale can begin with letters only (2)', () => {
+            const [error, msg] = IsValid.email('123.asd@asd.lt');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('locale can not contain two dots in a row', () => {
+            const [error, msg] = IsValid.email('123..asd@asd.lt');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part require dot symbol', () => {
+            const [error, msg] = IsValid.email('asd.123@asd');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part can contain only: letters, numbers and dot', () => {
+            const [error, msg] = IsValid.email('asd.123@123a_sd.lt');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part cannot begin with dot symbol', () => {
+            const [error, msg] = IsValid.email('asd.123@.asd');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part cannot end with dot symbol', () => {
+            const [error, msg] = IsValid.email('asd.123@asd.');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part contains invalid TLD', () => {
+            const [error, msg] = IsValid.email('asd.123@asd.a');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part contains invalid TLD (2)', () => {
+            const [error, msg] = IsValid.email('asd.123@asd.asd.a');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
+
+        test('domain part cannot have multiple dot symbols in a row', () => {
+            const [error, msg] = IsValid.email('asd.123@as..df');
+            expect(error).toEqual(true);
+            expect(msg.length).toBeGreaterThan(0);
+        })
     })
 
-    test('boolean', () => {
-        const [err, msg] = IsValid.email(true);
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    describe('Gauname tinkamas reiksmes, bet su atleistinomis klaidomis', () => {
+        test('many spaces in front', () => {
+            const [err, msg] = IsValid.email('  petras@petras.xyz');
+            expect(err).toBe(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('many spaces at the end', () => {
+            const [err, msg] = IsValid.email('petras@petras.xyz   ');
+            expect(err).toBe(false);
+            expect(msg).toBe('OK');
+        })
     })
 
-    test('array', () => {
-        const [err, msg] = IsValid.email([]);
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
+    describe('Gauname tinkamas reiksmes', () => {
+        test('correct value', () => {
+            const [error, msg] = IsValid.email('name@mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (2)', () => {
+            const [error, msg] = IsValid.email('name2@mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (3)', () => {
+            const [error, msg] = IsValid.email('name.surname@mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (4)', () => {
+            const [error, msg] = IsValid.email('name.surname123@mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (5)', () => {
+            const [error, msg] = IsValid.email('name.surname@123mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (6)', () => {
+            const [error, msg] = IsValid.email('name.surname@sub.mail.com');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
+
+        test('correct value (7)', () => {
+            const [error, msg] = IsValid.email('name.surname@y.x.co.uk');
+            expect(error).toEqual(false);
+            expect(msg).toBe('OK');
+        })
     })
-
-    test('null', () => {
-        const [err, msg] = IsValid.email(null);
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
-    })
-
-    test('object', () => {
-        const [err, msg] = IsValid.email({});
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
-    })
-
-    test('function', () => {
-        const [err, msg] = IsValid.email(() => { });
-        expect(err).toBe(true);
-        expect(msg).toBe('Netinkamas tipas, turi buti "string"');
-    })
-
-
-})
-
-describe('Gauname netinkamas email reiksmes', () => {
-    test('empty string', () => {
-        const [err, msg] = IsValid.email('');
-        expect(err).toBe(true);
-        expect(msg).toBe('Per trumpas , turi buti minimum 6 simboliai');
-    })
-
-    test('one simbol to short', () => {
-        const [err, msg] = IsValid.email('a@a.a');
-        expect(err).toBe(true);
-        expect(msg).toBe('Per trumpas , turi buti minimum 6 simboliai');
-    })
-
-    test('not enought @ simbol', () => {
-        const [err, msg] = IsValid.email('aaaaaa.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('email turi tureti tik viena @ simboli');
-    })
-
-    test('too much @ simbol', () => {
-        const [err, msg] = IsValid.email('aaaa@@aa.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('email turi tureti tik viena @ simboli');
-    })
-
-    test('@ infront', () => {
-        const [err, msg] = IsValid.email('@aaaaaaa.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('truksta teksto pries @ simbolio');
-    })
-
-    test('@ in the back', () => {
-        const [err, msg] = IsValid.email('aaaaaaa.lt@');
-        expect(err).toBe(true);
-        expect(msg).toBe('truksta teksto po @ simbolio');
-    })
-
-    test('@ in the back', () => {
-        const [err, msg] = IsValid.email('aaaaaaa@');
-        expect(err).toBe(true);
-        expect(msg).toBe('truksta teksto po @ simbolio');
-    })
-
-    test('invalid simbols', () => {
-        const [err, msg] = IsValid.email('aaa#a<a@aa.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('neleistinas simbolis - #');
-    })
-
-    test('invalid simbols', () => {
-        const [err, msg] = IsValid.email('aaaaaa@a>.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('neleistinas simbolis - >');
-    })
-
-    test('forgot .', () => {
-        const [err, msg] = IsValid.email('aaaa@aaa');
-        expect(err).toBe(true);
-        expect(msg).toBe('netinkamas domenas');
-    })
-
-    test('forgot . after @ simbol', () => {
-        const [err, msg] = IsValid.email('aa.aa@aaaaaaaa');
-        expect(err).toBe(true);
-        expect(msg).toBe('netinkamas domenas');
-    })
-
-    test('last simbol cannot be .', () => {
-        const [err, msg] = IsValid.email('aaaa@aaaaaaaa.');
-        expect(err).toBe(true);
-        expect(msg).toBe('el. pastas turi baigtis bent dvejomis raidemis');
-    })
-
-    test('second from end simbol cannot be .', () => {
-        const [err, msg] = IsValid.email('aaaa@aaaaaaa.a');
-        expect(err).toBe(true);
-        expect(msg).toBe('el. pastas turi baigtis bent dvejomis raidemis');
-    })
-
-    test('cannot be two dots inline', () => {
-        const [err, msg] = IsValid.email('aaaa@aaaaaaa..aa');
-        expect(err).toBe(true);
-        expect(msg).toBe('du taskai is eiles');
-    })
-
-    test('cannot be two dots inline', () => {
-        const [err, msg] = IsValid.email('aa..aa@aaaaaaaa.lt');
-        expect(err).toBe(true);
-        expect(msg).toBe('du taskai is eiles');
-    })
-})
-
-describe('Gauname tinkamas reiksmes', () => {
-    test('email', () => {
-        const [err, msg] = IsValid.email('petras@petras.lt');
-        expect(err).toBe(false);
-        expect(msg).toBe('OK');
-    })
-
-    test('email length', () => {
-        const [err, msg] = IsValid.email('a@a.lt');
-        expect(err).toBe(false);
-        expect(msg).toBe('OK');
-    })
-
 })

@@ -56,77 +56,134 @@ class IsValid {
     }
 
     static email(str) {
-        if (str === undefined) {
-            return [true, 'Neduotas parametras'];
-        }
-
         if (typeof str !== 'string') {
-            return [true, 'Netinkamas tipas, turi buti "string"']
+            return [true, 'Netinkamas tipas, turi buti "string"'];
+        }
+        if (str === '') {
+            return [true, 'Neivestas email adresas'];
         }
 
         str = str.trim();
 
-        const minWordLength = 6;
-        if (str.length < minWordLength) {
-            return [true, `Per trumpas , turi buti minimum ${minWordLength} simboliai`];
+        const parts = str.split('@');
+        if (parts.length !== 2) {
+            return [true, 'El pasto adresas privalo tureti tik viena @ simboli'];
         }
 
-        const allowedEmailSymbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.@';
-
-        let simbolCount = 0;
-
-        //neliesti
-        for (const simbol of str) {
-            if (simbol === '@') {
-                simbolCount++
-            }
+        const [locale, domain] = parts;
+        if (locale === '') {
+            return [true, 'Truksta dalies pries @ simboli'];
         }
-
-        if (simbolCount === 0 || simbolCount > 1) {
-            return [true, 'email turi tureti tik viena @ simboli']
-        }
-
-        if (str[0] === '@') {
-            return [true, 'truksta teksto pries @ simbolio']
-        }
-
-        // if (str[str.length - 1] === '@') {
-        //     return [true, 'truksta teksto po @ simbolio']
-        // }
-        if (str.at(-1) === '@') {
-            return [true, 'truksta teksto po @ simbolio']
-        }
-
-        for (const simbol of str) {
-            if (!allowedEmailSymbols.includes(simbol)) {
-                return [true, `neleistinas simbolis - ${simbol}`]
-            }
-        }
-
-        const splitedEmailStr = str.split('@')[1]
-
-        let dotCount = 0;
-
-        for (const simbolDot of splitedEmailStr) {
-            if (simbolDot === '.') {
-                dotCount++
-            }
-        }
-
-        if (dotCount === 0) {
-            return [true, 'netinkamas domenas']
-        }
-
-        if (str.at(-2) === '.' || str.at(-1) === '.') {
-            return [true, 'el. pastas turi baigtis bent dvejomis raidemis']
+        if (domain === '') {
+            return [true, 'Truksta dalies uz @ simboli'];
         }
 
         if (str.includes('..')) {
-            return [true, 'du taskai is eiles']
+            return [true, 'El pastas negali tureti dvieju tastu is eiles'];
         }
 
+        const allowedSymbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.';
+        if (locale[0] === '.'
+            || !isNaN(+locale[0])) {
+            return [true, 'El pastas turi prasideti raide'];
+        }
+        for (const symbol of locale) {
+            if (!allowedSymbols.includes(symbol)) {
+                return [true, `Pries @ neleistinas naudoti simbolis "${symbol}"`];
+            }
+        }
+
+        const domainParts = domain.split('.');
+        if (domainParts.length === 1) {
+            return [true, 'Uz @ simbolio truksta tasko (netinkamas domenas)'];
+        }
+        if (domainParts[0] === '') {
+            return [true, `Uz @ dalies tekstas negali prasideti tasku`];
+        }
+        if (domainParts[domainParts.length - 1].length < 2) {
+            return [true, `Uz @ dalies domenas turi baigtis bent dviejomis raidemis`];
+        }
+        for (const symbol of domain) {
+            if (!allowedSymbols.includes(symbol)) {
+                return [true, `Uz @ neleistinas naudoti simbolis "${symbol}"`];
+            }
+        }
         return [false, 'OK'];
     }
+
+    //simple varijantas
+    // static email(str) {
+    //     if (str === undefined) {
+    //         return [true, 'Neduotas parametras'];
+    //     }
+
+    //     if (typeof str !== 'string') {
+    //         return [true, 'Netinkamas tipas, turi buti "string"']
+    //     }
+
+    //     str = str.trim();
+
+    //     const minWordLength = 6;
+    //     if (str.length < minWordLength) {
+    //         return [true, `Per trumpas , turi buti minimum ${minWordLength} simboliai`];
+    //     }
+
+    //     const allowedEmailSymbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.@';
+
+    //     let simbolCount = 0;
+
+    //     //neliesti
+    //     for (const simbol of str) {
+    //         if (simbol === '@') {
+    //             simbolCount++
+    //         }
+    //     }
+
+    //     if (simbolCount === 0 || simbolCount > 1) {
+    //         return [true, 'email turi tureti tik viena @ simboli']
+    //     }
+
+    //     if (str[0] === '@') {
+    //         return [true, 'truksta teksto pries @ simbolio']
+    //     }
+
+    //     // if (str[str.length - 1] === '@') {
+    //     //     return [true, 'truksta teksto po @ simbolio']
+    //     // }
+    //     if (str.at(-1) === '@') {
+    //         return [true, 'truksta teksto po @ simbolio']
+    //     }
+
+    //     for (const simbol of str) {
+    //         if (!allowedEmailSymbols.includes(simbol)) {
+    //             return [true, `neleistinas simbolis - ${simbol}`]
+    //         }
+    //     }
+
+    //     const splitedEmailStr = str.split('@')[1]
+
+    //     let dotCount = 0;
+
+    //     for (const simbolDot of splitedEmailStr) {
+    //         if (simbolDot === '.') {
+    //             dotCount++
+    //         }
+    //     }
+
+    //     if (dotCount === 0) {
+    //         return [true, 'netinkamas domenas']
+    //     }
+
+    //     if (str.at(-2) === '.' || str.at(-1) === '.') {
+    //         return [true, 'el. pastas turi baigtis bent dvejomis raidemis']
+    //     }
+
+    //     if (str.includes('..')) {
+    //         return [true, 'du taskai is eiles']
+    //     }
+
+    //     return [false, 'OK'];
+    // }
 
     static password(str) {
         if (str.length < 2) {
