@@ -6,7 +6,7 @@ const submitDOM = formDOM.querySelector('button');
 const notificationsDOM = formDOM.querySelector('.notifications');
 
 if (submitDOM) {
-    submitDOM.addEventListener('click', (e) => {
+    submitDOM.addEventListener('click', async (e) => {
         e.preventDefault();
 
         notificationsDOM.classList.remove('show');
@@ -49,18 +49,14 @@ if (submitDOM) {
             delete data.repass;
             delete data.tos;
 
-            async function postData() {
-                const response = await fetch(formDOM.action, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data),
-                });
-                return response.json();
-            }
-
-            postData();
+            const response = await fetch(formDOM.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
+            return await response.json();
         }
 
         // tikriname ar laukai ne tusti
