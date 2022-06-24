@@ -11,7 +11,7 @@
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll --passWithNoTests"
   },
   "keywords": [],
-  "author": "Rimantas",
+  "author": "Vytautas",
   "license": "MIT",
   "devDependencies": {
     "jest": "^28.1.1",
