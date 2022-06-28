@@ -1,0 +1,19 @@
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: greenyellow;
+    border-radius: 6px;
+}
+
+.main-loggedIn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: green;
+}
+
+.main-header > nav {
+    display: flex;
+    gap: 20px;
+}
