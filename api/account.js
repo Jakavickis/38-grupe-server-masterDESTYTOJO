@@ -164,7 +164,6 @@ handler._innerMethods.put = async (data, callback) => {
         });
     }
 
-    // cia kazkur klaida: start
     const { fullname, pass } = payload;
 
     console.log(fullname, pass);
@@ -186,7 +185,7 @@ handler._innerMethods.put = async (data, callback) => {
             });
         }
     }
-    // cia kazkur klaida: end
+
 
     const [readErr, readMsg] = await file.read('accounts', email + '.json');
     if (readErr) {
@@ -224,9 +223,29 @@ handler._innerMethods.put = async (data, callback) => {
 }
 
 // DELETE
-handler._innerMethods.delete = (data, callback) => {
+handler._innerMethods.delete = async (data, callback) => {
+    // 1) suzinoti apie kuri vartotoja norima gauti duomenis
+    const email = data.searchParams.get('email');
+
+    // 2) Patikriname ar gautas email yra email formato
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, {
+            msg: emailMsg,
+        });
+    }
+
+    // 3) Trinam paskyra
+    const [deleteErr] = await file.delete('accounts', email + '.json', userData);
+
+    if (deleteErr) {
+        return callback(500, {
+            msg: 'Nepavyko istrinti paskyros informacijos, del vidines serverio klaidos',
+        });
+    }
+
     return callback(200, {
-        msg: 'Account: delete',
+        msg: 'Paskyra istrinta sekmingai',
     });
 }
 
