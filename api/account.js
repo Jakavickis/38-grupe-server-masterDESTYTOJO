@@ -1,4 +1,3 @@
-
 import { file } from "../lib/file.js";
 import { IsValid } from "../lib/is-valid/IsValid.js";
 import { utils } from "../lib/utils.js";
@@ -133,7 +132,7 @@ handler._innerMethods.get = async (data, callback) => {
         });
     }
 
-    delete userData.pass;
+    delete userData.hashedPassword;
 
     return callback(200, {
         msg: userData,
@@ -142,9 +141,79 @@ handler._innerMethods.get = async (data, callback) => {
 
 // PUT (kapitalinis info pakeistimas)
 // PATCH (vienos info dalies pakeitimas)
-handler._innerMethods.put = (data, callback) => {
+// Leidziam pasikeisti tik: fullname, pass -> hashedPassword
+handler._innerMethods.put = async (data, callback) => {
+    const { payload } = data;
+    const email = data.searchParams.get('email');
+
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, {
+            msg: emailMsg,
+        });
+    }
+
+    const [validErr, validMsg] = utils.objectValidator(payload, {
+        optional: ['fullname', 'pass'],
+    });
+
+    if (validErr) {
+        return callback(400, {
+            msg: validMsg,
+        });
+    }
+
+    // cia kazkur klaida: start
+    const { fullname, pass } = payload;
+
+    console.log(fullname, pass);
+
+    if (fullname) {
+        const [fullnameErr, fullnameMsg] = IsValid.fullname(fullname);
+        if (fullnameErr) {
+            return callback(400, {
+                msg: fullnameMsg,
+            });
+        }
+    }
+
+    if (pass) {
+        const [passErr, passMsg] = IsValid.password(pass);
+        if (passErr) {
+            return callback(400, {
+                msg: passMsg,
+            });
+        }
+    }
+    // cia kazkur klaida: end
+
+    const [readErr, readMsg] = await file.read('accounts', email + '.json');
+    if (readErr) {
+        return callback(404, {
+            msg: 'Toks vartotojas neegzistouja, arba nepavyko gauti duomenu del teisiu trukumo',
+        });
+    }
+
+    const [parseErr, userData] = utils.parseJSONtoObject(readMsg);
+    if (parseErr) {
+        return callback(500, {
+            msg: 'Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos',
+        });
+    }
+
+    userData.fullname = fullname;
+    userData.pass = pass;
+
+    const [updateErr] = await file.update('accounts', email + '.json', userData);
+
+    if (updateErr) {
+        return callback(500, {
+            msg: 'Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos',
+        });
+    }
+
     return callback(200, {
-        msg: 'Account: put',
+        msg: 'Vartotojo informacija sekmingai atnaujinta',
     });
 }
 
