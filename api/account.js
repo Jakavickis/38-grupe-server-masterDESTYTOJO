@@ -1,3 +1,4 @@
+
 import { file } from "../lib/file.js";
 import { IsValid } from "../lib/is-valid/IsValid.js";
 import { utils } from "../lib/utils.js";
@@ -201,8 +202,13 @@ handler._innerMethods.put = async (data, callback) => {
         });
     }
 
-    userData.fullname = fullname;
-    userData.pass = pass;
+    if (fullname) {
+        userData.fullname = fullname;
+    }
+
+    if (pass) {
+        userData.pass = pass;
+    }
 
     const [updateErr] = await file.update('accounts', email + '.json', userData);
 
