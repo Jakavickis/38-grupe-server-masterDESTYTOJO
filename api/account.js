@@ -6,6 +6,7 @@ import { utils } from "../lib/utils.js";
 const handler = {};
 
 handler.account = async (data, callback) => {
+    console.log(data)
     // kliento intensija - ka jis nori daryti?
     const acceptableMethods = ['get', 'post', 'put', 'delete'];
 
@@ -25,12 +26,14 @@ handler._innerMethods = {};
 handler._innerMethods.post = async (data, callback) => {
     const { payload } = data;
 
+
+
     /*
     1) patikrinti, ar teisinga info (payload):
-        - email
-        - pass
-        - fullname
-        - isitikinti, jog atejusiame objekte nera kitu key's apart: email, fullname ir password
+    - email
+    - pass
+    - fullname
+    - isitikinti, jog atejusiame objekte nera kitu key's apart: email, fullname ir password
     */
 
     const [validErr, validMsg] = utils.objectValidator(payload, {
@@ -88,6 +91,8 @@ handler._innerMethods.post = async (data, callback) => {
     */
 
     delete payload.pass;
+    payload.registerDate = Date.now();
+    payload.browser = data.user.browser;
     payload.hashedPassword = utils.hash(pass)[1];
 
     const [createErr] = await file.create('accounts', email + '.json', payload);
