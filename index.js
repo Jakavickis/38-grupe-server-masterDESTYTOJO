@@ -10,7 +10,6 @@ app.init = () => {
 
     // paleidziam pacio serverio logika (perduodame prisijungima prie DB)
     server.init();
-
     // paleidzia papildomus nuolatinius procesus:
     // - issitrinti nebereikalingus failus
     // - suarchivuoti retai naudojamus failus

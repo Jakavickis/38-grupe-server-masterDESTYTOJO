@@ -4,8 +4,8 @@ import config from '../config.js';
 class PageRegister extends PageTemplate {
     constructor(data) {
         super(data);
-        this.pageCSSfileName = 'register';
-        this.pageJSfileName = 'register'
+        this.pageCSSfileName = 'auth';
+        this.pageJSfileName = 'register';
     }
 
     mainHTML() {
@@ -13,8 +13,8 @@ class PageRegister extends PageTemplate {
         const formValues = {
             fullname: isDev ? 'Chuck Norris' : '',
             email: isDev ? 'chuck@norris.com' : '',
-            pass: isDev ? 'chucknorrischucknorris' : '',
-            repass: isDev ? 'chucknorrischucknorris2' : '',
+            pass: isDev ? 'chuck@norris.com' : '',
+            repass: isDev ? 'chuck@norris.com2' : '',
         }
         return `<div class="row">
                     <p>Register 🎅</p>

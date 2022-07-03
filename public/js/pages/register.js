@@ -1,3 +1,4 @@
+
 import { IsValid } from "../components/IsValid.js";
 
 const formDOM = document.querySelector('.form');
@@ -16,38 +17,35 @@ if (submitDOM) {
 
         for (const inputDOM of inputsDOM) {
             if (inputDOM.type !== 'checkbox') {
-                //prie name priskiriame inputo value ka irasome
-                data[inputDOM.name] = inputDOM.value;
                 const rule = inputDOM.dataset.validation;
-                // destrukturizavimas [err,msg] = [true, 'Per trumpas email tekstas.']
                 const [err, msg] = IsValid[rule](inputDOM.value);
+
                 if (err) {
-                    errors.push(msg)
+                    errors.push(msg);
                 } else {
                     data[inputDOM.name] = inputDOM.value;
                 }
             } else {
                 data[inputDOM.name] = inputDOM.checked;
                 if (!inputDOM.checked) {
-                    errors.push('Privaloma sutikti su TOS')
+                    errors.push('Privaloma sutikti su TOS');
                 }
             }
         }
 
         if (inputsDOM[2].value !== inputsDOM[3].value) {
-            errors.push('Slaptazodziai nesutampa')
+            errors.push('Slaptazodziai nesutampa');
         }
-
-
 
         if (errors.length) {
             notificationsDOM.classList.add('show');
-            // .\n nauja eilute(enter) reiskia simbolis ir join newline
+            // notificationsDOM.innerHTML = errors.map(e => `<p>${e}.</p>`).join('');
             notificationsDOM.innerText = errors.join('.\n') + '.';
-            // arba notificationsDOM.innerHTML = errors.map(e => `<p>${e}.</p>`).join('');
         } else {
             delete data.repass;
             delete data.tos;
+
+            // async/await
 
             const response = await fetch(formDOM.action, {
                 method: 'POST',
@@ -56,7 +54,16 @@ if (submitDOM) {
                 },
                 body: JSON.stringify(data),
             });
-            return await response.json();
+            const resBody = await response.json();
+
+            notificationsDOM.innerText = resBody.msg;
+            notificationsDOM.classList.add('show');
+            if (response.ok) {
+                notificationsDOM.classList.add('success');
+            } else {
+                notificationsDOM.classList.remove('success');
+            }
+
         }
 
         // tikriname ar laukai ne tusti
