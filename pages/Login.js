@@ -16,7 +16,7 @@ class PageLogin extends PageTemplate {
         }
         return `<div class="row">
                     <p>Login 🎅</p>
-                    <form class="form borderContainer" action="/api/account" method="POST">
+                    <form class="form borderContainer" action="/api/token" method="POST">
                         <div class="notifications"></div>
                         
                         <label for="email">Email</label>
