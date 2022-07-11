@@ -22,6 +22,44 @@ handler._innerMethods = {};
 
 // POST - sukuriame paskyra
 handler._innerMethods.post = async (data, callback) => {
+    const { payload } = data;
+
+    /*
+    1) patikrinti, ar teisinga info (payload):
+        - email
+        - pass
+        - isitikinti, jog atejusiame objekte nera kitu key's apart: email, fullname ir password
+    */
+
+    const [validErr, validMsg] = utils.objectValidator(payload, {
+        required: ['email', 'pass'],
+    });
+
+    if (validErr) {
+        return callback(400, {
+            msg: validMsg,
+        });
+    }
+
+    const { email, pass } = payload;
+
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, {
+            msg: emailMsg,
+        });
+    }
+
+    const [passErr, passMsg] = IsValid.password(pass);
+    if (passErr) {
+        return callback(400, {
+            msg: passMsg,
+        });
+    }
+
+    // 2. Patikrinti ar egzistuoja account
+    // 3. Suteikti prieiga prie sistemos
+
     return callback(200, {
         msg: 'Token sukurtas sekmingai',
     });
