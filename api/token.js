@@ -1,6 +1,8 @@
+
 import { file } from "../lib/file.js";
 import { IsValid } from "../lib/is-valid/IsValid.js";
 import { utils } from "../lib/utils.js";
+import config from "../config.js";
 
 const handler = {};
 
@@ -58,7 +60,6 @@ handler._innerMethods.post = async (data, callback) => {
     }
 
     // 2. Patikrinti ar egzistuoja account
-
     const [readErr, readMsg] = await file.read('accounts', email + '.json');
     if (readErr) {
         return callback(400, {
@@ -87,6 +88,8 @@ handler._innerMethods.post = async (data, callback) => {
     }
 
     // 3. Suteikti prieiga prie sistemos
+    const randomToken = utils.randomString(config.sessionTokenLength);
+    console.log(randomToken);
 
     return callback(200, {
         msg: 'Token sukurtas sekmingai',
