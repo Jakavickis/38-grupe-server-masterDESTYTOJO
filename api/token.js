@@ -105,7 +105,7 @@ handler._innerMethods.post = async (data, callback) => {
         'login-token=' + randomToken,
         'path=/',
         'domain=localhost',
-        'max-age=' + tokenObject.hardDeadline,
+        'max-age=' + config.sessionToken.hardDeadline,
         'expires=Sun, 16 Jul 3567 06:23:41 GMT',
         // 'Secure',
         'SameSite=Lax',
@@ -139,5 +139,29 @@ handler._innerMethods.delete = async (data, callback) => {
         msg: 'Token istrintas sekmingai',
     });
 }
+
+handler._innerMethods.verify = async (tokenStr) => {
+    if (typeof tokenStr !== 'string' || tokenStr === '') {
+        return false;
+    }
+
+    const [cookieErr, cookieMsg] = await file.read('token', tokenStr + '.json');
+    if (cookieErr) {
+        return false;
+    }
+
+    const [cookieParseErr, cookieParseMsg] = utils.parseJSONtoObject(cookieMsg);
+    if (cookieParseErr) {
+        return false;
+    }
+
+    const { hardDeadline } = cookieParseMsg;
+    if (typeof hardDeadline !== 'number' || !isFinite(hardDeadline)) {
+        return false;
+    }
+
+    return hardDeadline * 1000 >= Date.now();
+}
+
 
 export default handler;
